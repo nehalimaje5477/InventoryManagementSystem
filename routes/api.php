@@ -22,4 +22,5 @@ Route::get('/hello', function () {
     return "Hello World!";
   });
 Route::post('/category', [CategoryController::class , 'store'])->name('category');
+Route::get('/view',[CategoryController::class , 'index'])->name('view');
  

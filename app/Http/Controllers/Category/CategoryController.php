@@ -13,6 +13,10 @@ class CategoryController extends Controller
         $this->category = new CategoryModel();
     }
 
+    public function index(){
+        return CategoryModel::all();
+    }
+
     public function store(Request $request){
         $validator = Validator::make(Request::all(),[
             'category_name' => 'required',
