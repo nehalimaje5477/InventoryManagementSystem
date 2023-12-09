@@ -22,5 +22,6 @@ Route::get('/hello', function () {
     return "Hello World!";
   });
 Route::post('/category', [CategoryController::class , 'store'])->name('category');
-Route::get('/view',[CategoryController::class , 'index'])->name('view');
- 
+Route::get('/category',[CategoryController::class , 'index'])->name('view');
+Route::put('/category/{id}', [CategoryController::class, 'update']);
+Route::delete('/category/{id}', [CategoryController::class, 'delete']);

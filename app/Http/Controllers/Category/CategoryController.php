@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Category;
-
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\CategoryModel;
 use Validator;
-use Request;
+//use Request;
+
 
 class CategoryController extends Controller
 {
@@ -18,12 +19,16 @@ class CategoryController extends Controller
     }
 
     public function store(Request $request){
-        $validator = Validator::make(Request::all(),[
+
+        $validator = Validator::make($request->all(),[
             'category_name' => 'required',
             'category_desc' => 'required'
         ]);
 
-        $data = Request::all();
+         $data = array(
+            'category_name' => $request->category_name,  
+            'category_desc' => $request->category_desc  
+         );
 
         if($validator->fails()){
             $errorMessage = $validator->errors()->first();
@@ -34,7 +39,26 @@ class CategoryController extends Controller
             return response()->json($response, 401);
         }else{
             $result = CategoryModel::create($data);
-            return response()->json(["statis" => 400,"message" => "Category Addes successfully!"]);
+            return response()->json(["status" => 400,"message" => "Category Addes successfully!"]);
         }
+    }
+
+    public function update(Request $request, $id){
+        
+        $category = CategoryModel::find($id);
+        $category->category_name = $request->input('category_name');
+        $category->category_desc = $request->input('category_desc');
+        if($category->save()){
+            return response()->json(["message" => "Category Updated!"],404);
+        }else{
+            return response()->json(["message" => "Category not Updated"]);
+        }
+        
+    }
+
+    public function delete(Request $request, $id){
+        $category = CategoryModel::find($id);
+        $category->delete();
+        return response()->json(["message" => "Category deleted successfully!"],202);
     }
 }
