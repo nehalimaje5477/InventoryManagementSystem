@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('items');
         Schema::create('items', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('category_id');
+            $table->bigIncrements('id');
+            $table->bigInteger('category_id')->unsigned();
             $table->string('item_name');
             $table->text('item_desc');
             $table->string('price');
             $table->integer('quantity');
             $table->timestamps(); 
+        });
+        Schema::table('items', function($table) {
+            $table->foreign('category_id')->references('id')->on('category');
         });
     }
 

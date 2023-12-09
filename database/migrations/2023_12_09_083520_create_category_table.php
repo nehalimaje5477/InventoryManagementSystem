@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('items');
         Schema::create('category', function (Blueprint $table) {
-            $table->increments('id'); 
+            $table->bigIncrements('id'); 
             $table->string('category_name');
             $table->text('category_desc');
             $table->timestamps();
