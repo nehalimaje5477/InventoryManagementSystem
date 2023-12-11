@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ItemCategoryModel;
 use Illuminate\Http\Request;
 use App\Models\ItemModel;
+use Illuminate\Support\Facades\Auth;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
@@ -17,6 +18,7 @@ class ItemController extends Controller
     //CODE TO GET ALL ACTIVE ITEM DETAILS
     public function index()
     {
+        $user = Auth::user();
         return ItemModel::where('isActive', '=', 0)->get();
     }
 
