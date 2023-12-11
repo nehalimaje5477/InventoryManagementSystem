@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Item;
 
 use App\Http\Controllers\Controller;
+use App\Models\ItemCategoryModel;
 use Illuminate\Http\Request;
 use App\Models\ItemModel;
 use Validator;
@@ -11,7 +12,7 @@ class ItemController extends Controller
 {
 
     public function index(){
-        return ItemModel::all();
+        return ItemModel::where('isActive','=', 0)->get();
     }
     public function store(Request $request){
         
@@ -24,7 +25,6 @@ class ItemController extends Controller
         ]);
 
         $data = array(
-            'category_id' => $request->category_id,
             'item_name' => $request->item_name,
             'item_desc' => $request->item_desc,
             'price' => $request->price,
@@ -40,6 +40,12 @@ class ItemController extends Controller
             return response()->json($response, 401);
         }else{
             $result = ItemModel::create($data);
+            $item_category_data = array(
+                'item_id' => $result->id,
+                'category_id' =>  $request->category_id
+            );
+            
+            $item_category_result = ItemCategoryModel::create($item_category_data);
             return response()->json(["status" => 400,"message" => "Item details added successfully!"]);
         }
     }
@@ -78,7 +84,8 @@ class ItemController extends Controller
 
     public function delete(Request $request,$id){
         $item = ItemModel::find($id);
-        if($item->delete()){
+        $item->isActive = 1;
+        if($item->save()){
             return response()->json(["message" => "Item details deleted successfully!"],404);
         }else{
             return response()->json(["message" => "Unable to delete item details"]);

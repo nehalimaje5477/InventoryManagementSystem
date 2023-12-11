@@ -10,12 +10,10 @@ use Validator;
 
 class CategoryController extends Controller
 {
-    public function __constructor(){
-        $this->category = new CategoryModel();
-    }
+    
 
     public function index(){
-        return CategoryModel::all();
+        return CategoryModel::where('isActive','=',0)->get();
     }
 
     public function store(Request $request){
@@ -58,7 +56,8 @@ class CategoryController extends Controller
 
     public function delete(Request $request, $id){
         $category = CategoryModel::find($id);
-        $category->delete();
+        $category->isActive = 1;
+        $category->save();
         return response()->json(["message" => "Category deleted successfully!"],202);
     }
 }
