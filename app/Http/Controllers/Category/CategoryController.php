@@ -10,7 +10,6 @@ use Validator;
 
 class CategoryController extends Controller
 {
-    
 
     public function index(){
         return CategoryModel::where('isActive','=',0)->get();
