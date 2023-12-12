@@ -94,7 +94,6 @@ class ItemController extends Controller
         ]);
 
         $item = ItemModel::find($id);
-        // $item->category_id = $request->category_id;
         $item->item_name = $request->item_name;
         $item->item_desc = $request->item_desc;
         $item->price = $request->price;

@@ -26,6 +26,7 @@ Route::get('/hello', function () {
   return "Hello World!";
 });
 
+//AUTHORISED ROUTE DETAILS.
 Route::middleware([AuthMiddleware::class])->group(function () {
   Route::get('/category', [CategoryController::class, 'index'])->name('view');
   Route::post('/category', [CategoryController::class, 'store'])->name('category');
@@ -39,14 +40,3 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 });
 
 
-//Route::post('/category', [CategoryController::class , 'store'])->name('category');
-//Route::get('/category',[CategoryController::class , 'index'])->name('view');
-// Route::put('/category/{id}', [CategoryController::class, 'update']);
-// Route::delete('/category/{id}', [CategoryController::class, 'delete']);
-
-// Route::post('/items',[ItemController::class,'store']);
-// Route::get('/items',[ItemController::class, 'index']);
-// Route::put('/items/{id}',[ItemController::class, 'update']);
-// Route::delete('/items/{id}',[ItemController::class, 'delete']);
-
-//Route::post('/login', [UserController::class, 'loginUser']);
