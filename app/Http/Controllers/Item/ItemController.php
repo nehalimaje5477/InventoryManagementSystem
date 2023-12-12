@@ -117,7 +117,8 @@ class ItemController extends Controller
                     'item_name' => $request->item_name,
                     'item_desc' => $request->item_desc,
                     'price' => $request->price,
-                    'quantity' => $request->quantity
+                    'quantity' => $request->quantity,
+                    'catgory' => $categoryID
                 );
 
                 //SEND EMAIL NOTIFICATION FOR UPDATED ITEMS.
