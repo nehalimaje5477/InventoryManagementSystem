@@ -35,5 +35,6 @@ $ php artisan migrate
 **Please check below link for postman collection.**
 https://github.com/nehalimaje5477/InventoryManagementSystem/blob/master/InventorySystem.postman_collection.json
 
-
+**Middleware details :** 
+Bearer Token : 'secrete-auth-token'
 
