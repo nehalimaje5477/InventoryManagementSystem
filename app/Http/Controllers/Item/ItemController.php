@@ -148,7 +148,26 @@ class ItemController extends Controller
     {
         $item = ItemModel::find($id);
         $item->isActive = 1;
+        $itemdetails = ItemModel::where('id','=','3')->first();
+        $itemName = $itemdetails->item_name;
         if ($item->save()) {
+            //SEND EMAIL NOTIFICATION FOR UPDATED ITEMS.
+            $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
+            ->setUsername('nehalimaje@gmail.com')
+            ->setPassword('talkzjkqpgnksxfm');
+
+        $mailer = new Swift_Mailer($transport);
+        $message = (new Swift_Message())
+            ->setSubject('Item is deleted.')
+            ->setFrom(['nehalimaje@gmail.com'])
+            ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
+        $message->setBody('Item id : '.$id.' name :'.$itemName.' is deleted.');
+        if ($mailer->send($message)) {
+            //return "Mail sent";
+        } else {
+            //return "Mail not sent.";
+        }
+
             return response()->json(["message" => "Item details deleted successfully!"], 404);
         } else {
             return response()->json(["message" => "Unable to delete item details"]);
