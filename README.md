@@ -2,7 +2,7 @@
 
 Inventory Management System with Laravel 10 and MySql.
 
-#Features
+#Features : 
 Item Management
 Category Management
 
