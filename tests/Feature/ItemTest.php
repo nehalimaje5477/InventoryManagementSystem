@@ -37,7 +37,7 @@ class viewItemTest extends TestCase
             'quantity' => 5
         ];
 
-        $this->json('post', 'api/user', $itemDetails)
+        $this->json('post', '/api/items', $itemDetails)
             ->assertStatus(Response::HTTP_CREATED)
             ->assertJsonStructure(
                 [
