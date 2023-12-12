@@ -18,7 +18,7 @@ class ItemController extends Controller
     //CODE TO GET ALL ACTIVE ITEM DETAILS
     public function index()
     {
-        $user = Auth::user();
+        //$user = Auth::user();
         return ItemModel::where('isActive', '=', 0)->get();
     }
 
@@ -58,9 +58,9 @@ class ItemController extends Controller
 
             //INSERT ITEM AND CATEGORY DETAILS
             $item_category_result = ItemCategoryModel::create($item_category_data);
-            
 
-            //SEND EMAIL
+
+            //SEND EMAIL NOTIFICATION WHEN INSERT NEW ITEM
             // Create the Transport
             $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
                 ->setUsername('nehalimaje@gmail.com')
@@ -72,7 +72,7 @@ class ItemController extends Controller
                 ->setSubject('New Item Details.')
                 ->setFrom(['nehalimaje@gmail.com'])
                 ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
-            $message->setBody('New Item Details are added as below.'.json_encode($data));
+            $message->setBody('New Item Details are added as below.' . json_encode($data));
             if ($mailer->send($message)) {
                 //return "Mail sent";
             } else {
@@ -94,11 +94,12 @@ class ItemController extends Controller
         ]);
 
         $item = ItemModel::find($id);
-        $item->category_id = $request->category_id;
+        // $item->category_id = $request->category_id;
         $item->item_name = $request->item_name;
         $item->item_desc = $request->item_desc;
         $item->price = $request->price;
         $item->quantity = $request->quantity;
+        $categoryID = $request->category_id;
 
         if ($validator->fails()) {
             $errorMessage = $validator->errors()->first();
@@ -109,6 +110,32 @@ class ItemController extends Controller
             return response()->json($response, 401);
         } else {
             if ($item->save()) {
+
+                //UPDATE NEW CATEGORY DETAILS IN ITEMCATEGORY TABLE
+                ItemCategoryModel::where('item_id', $id)->update(['category_id' => $categoryID]);
+                $data = array(
+                    'item_name' => $request->item_name,
+                    'item_desc' => $request->item_desc,
+                    'price' => $request->price,
+                    'quantity' => $request->quantity
+                );
+
+                //SEND EMAIL NOTIFICATION FOR UPDATED ITEMS.
+                $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
+                    ->setUsername('nehalimaje@gmail.com')
+                    ->setPassword('talkzjkqpgnksxfm');
+
+                $mailer = new Swift_Mailer($transport);
+                $message = (new Swift_Message())
+                    ->setSubject('Updated Item Details.')
+                    ->setFrom(['nehalimaje@gmail.com'])
+                    ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
+                $message->setBody('Item details are updated. Updated Item Details are added as below.' . json_encode($data));
+                if ($mailer->send($message)) {
+                    //return "Mail sent";
+                } else {
+                    //return "Mail not sent.";
+                }
                 return response()->json(["message" => "Item details are Updated!"], 404);
             } else {
                 return response()->json(["message" => "Item details are not Updated"]);
