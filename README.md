@@ -14,7 +14,7 @@ Follow below steps to get clone of repository.
 4. Add your database credentials to '.env' file.
 
 Start the laravel server with below command
-$ hp artisan serve
+$ php artisan serve
 
 Run migration:
 $ php artisan migrate
