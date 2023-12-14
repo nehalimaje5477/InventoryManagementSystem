@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
 
     public function index(){
-        return CategoryModel::where('isActive','=',0)->get();
+        return CategoryModel::with('items')->where('isActive','=',0)->get();
     }
 
     public function store(Request $request){
@@ -53,10 +53,24 @@ class CategoryController extends Controller
         
     }
 
+    public function getCategory(Request $request,$id){
+        $category = CategoryModel::with('items')->where('id','=',$id)->get();
+        if($category){
+            return response()->json(["categoryDetails" => $category]);
+        }else{
+            return response()->json(["message" => "No data found."]);
+        }
+    }
+
     public function delete(Request $request, $id){
         $category = CategoryModel::find($id);
-        $category->isActive = 1;
-        $category->save();
-        return response()->json(["message" => "Category deleted successfully!"],202);
+        if($category){
+            $category->isActive = 1;
+            $category->save();
+            return response()->json(["message" => "Category deleted successfully!"],202); 
+        }else{
+            return response()->json(["message" => "Category ID not found.!"]);
+        }
+        
     }
 }

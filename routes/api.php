@@ -32,11 +32,13 @@ Route::middleware([AuthMiddleware::class])->group(function () {
   Route::post('/category', [CategoryController::class, 'store'])->name('category');
   Route::put('/category/{id}', [CategoryController::class, 'update']);
   Route::delete('/category/{id}', [CategoryController::class, 'delete']);
+  Route::get('/getCategoryDetails/{id}',[CategoryController::class, 'getCategory']);
 
   Route::post('/items', [ItemController::class, 'store']);
   Route::get('/items', [ItemController::class, 'index']);
   Route::put('/items/{id}', [ItemController::class, 'update']);
   Route::delete('/items/{id}', [ItemController::class, 'delete']);
+  Route::get('/getItemDetails/{id}',[ItemController::class, 'getItemDetails']);
 });
 
 

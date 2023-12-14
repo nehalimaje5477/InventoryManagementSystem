@@ -19,7 +19,7 @@ class ItemController extends Controller
     public function index()
     {
         //$user = Auth::user();
-        return ItemModel::where('isActive', '=', 0)->get();
+        return ItemModel::with('category')->where('isActive', '=', 0)->get();
     }
 
     //CODE TO INSERT ITEM DETAILS
@@ -31,8 +31,8 @@ class ItemController extends Controller
             'category_id' => 'required',
             'item_name' => 'required',
             'item_desc' => 'required',
-            'price' => 'required',
-            'quantity' => 'required'
+            'price' => 'required|numeric|gt:0',
+            'quantity' => 'required|numeric|gt:0'
         ]);
 
         $data = array(
@@ -73,11 +73,12 @@ class ItemController extends Controller
                 ->setFrom(['nehalimaje@gmail.com'])
                 ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
             $message->setBody('New Item Details are added as below.' . json_encode($data));
-            if ($mailer->send($message)) {
-                //return "Mail sent";
-            } else {
-                //return "Mail not sent.";
-            }
+            //$mailer->send($message);
+            // if ($mailer->send($message)) {
+            //     //return "Mail sent";
+            // } else {
+            //     //return "Mail not sent.";
+            // }
             return response()->json(["status" => 400, "message" => "Item details added successfully!"]);
         }
     }
@@ -89,8 +90,8 @@ class ItemController extends Controller
             'category_id' => 'required',
             'item_name' => 'required',
             'item_desc' => 'required',
-            'price' => 'required',
-            'quantity' => 'required'
+            'price' => 'required|numeric|gt:0',
+            'quantity' => 'required|numeric|gt:0'
         ]);
 
         $item = ItemModel::find($id);
@@ -131,11 +132,13 @@ class ItemController extends Controller
                     ->setFrom(['nehalimaje@gmail.com'])
                     ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
                 $message->setBody('Item details are updated. Updated Item Details are added as below.' . json_encode($data));
-                if ($mailer->send($message)) {
-                    //return "Mail sent";
-                } else {
-                    //return "Mail not sent.";
-                }
+                //$mailer->send($message);
+
+                // if ($mailer->send($message)) {
+                //     //return "Mail sent";
+                // } else {
+                //     //return "Mail not sent.";
+                // }
                 return response()->json(["message" => "Item details are Updated!"], 404);
             } else {
                 return response()->json(["message" => "Item details are not Updated"]);
@@ -147,29 +150,40 @@ class ItemController extends Controller
     {
         $item = ItemModel::find($id);
         $item->isActive = 1;
-        $itemdetails = ItemModel::where('id','=','3')->first();
+        $itemdetails = ItemModel::where('id', '=', '3')->first();
         $itemName = $itemdetails->item_name;
         if ($item->save()) {
             //SEND EMAIL NOTIFICATION FOR UPDATED ITEMS.
             $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
-            ->setUsername('nehalimaje@gmail.com')
-            ->setPassword('talkzjkqpgnksxfm');
+                ->setUsername('nehalimaje@gmail.com')
+                ->setPassword('talkzjkqpgnksxfm');
 
-        $mailer = new Swift_Mailer($transport);
-        $message = (new Swift_Message())
-            ->setSubject('Item is deleted.')
-            ->setFrom(['nehalimaje@gmail.com'])
-            ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
-        $message->setBody('Item id : '.$id.' name :'.$itemName.' is deleted.');
-        if ($mailer->send($message)) {
-            //return "Mail sent";
-        } else {
-            //return "Mail not sent.";
-        }
+            $mailer = new Swift_Mailer($transport);
+            $message = (new Swift_Message())
+                ->setSubject('Item is deleted.')
+                ->setFrom(['nehalimaje@gmail.com'])
+                ->setTo(['neha.limaje@xplortechnologies.com' => 'Test']);
+            $message->setBody('Item id : ' . $id . ' name :' . $itemName . ' is deleted.');
+            //$mailer->send($message);
+            // if ($mailer->send($message)) {
+            //     //return "Mail sent";
+            // } else {
+            //     //return "Mail not sent.";
+            // }
 
             return response()->json(["message" => "Item details deleted successfully!"], 404);
         } else {
             return response()->json(["message" => "Unable to delete item details"]);
+        }
+    }
+
+    public function getItemDetails(Request $request, $id)
+    {
+        $item = ItemModel::where('id', '=', $id)->get();
+        if ($item) {
+            return response()->json(['Item' => $item]);
+        } else {
+            return response()->json(['message' => 'No item details found.']);
         }
     }
 }
